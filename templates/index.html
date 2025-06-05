@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>California Home Price Estimator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <header class="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center">
+    <h1 class="hero-title">California Home Price Estimator</h1>
+    <p class="hero-subtitle">Get accurate home value estimates powered by machine learning</p>
+  </header>
+
+  <main class="container my-5">
+    <div class="prediction-card mx-auto p-4 rounded shadow-sm bg-white">
+      <h2 class="mb-4 text-center">Enter Home Features</h2>
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+      <form method="POST" action="/">
+        <div class="row g-3">
+          {% for field, label, icon, step in [
+            ("MedInc", "Median Income", "dollar-sign", "0.01"),
+            ("HouseAge", "House Age", "calendar-alt", "1"),
+            ("AveRooms", "Average Rooms", "door-open", "0.1"),
+            ("AveBedrms", "Average Bedrooms", "bed", "0.1"),
+            ("Population", "Population", "users", "1"),
+            ("AveOccup", "Average Occupancy", "user-friends", "0.1"),
+            ("Latitude", "Latitude", "map-marker-alt", "0.0001"),
+            ("Longitude", "Longitude", "map-marker-alt", "0.0001")
+          ] %}
+          <div class="col-md-6">
+            <label for="{{ field }}" class="form-label">{{ label }}</label>
+            <div class="input-group">
+              <input type="number" step="{{ step }}" id="{{ field }}" name="{{ field }}" class="form-control" required />
+              <span class="input-group-text"><i class="fas fa-{{ icon }}"></i></span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">
+          <i class="fas fa-calculator me-2"></i> Calculate Estimate
+        </button>
+      </form>
+
+      {% if prediction_text %}
+      <div class="result-container mt-4 p-3 rounded shadow-sm text-center bg-light">
+        <h4 class="text-muted">Estimated Home Value</h4>
+        <div class="display-5 fw-bold text-success">${{ prediction_text }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <footer class="text-center py-3">
+    &copy; 2025 Home Estimator &nbsp;&bull;&nbsp; All Rights Reserved
+  </footer>
+</body>
+</html>
